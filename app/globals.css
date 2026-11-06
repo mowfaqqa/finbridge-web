@@ -1,0 +1,52 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme inline {
+  --font-sans: "IBM Plex Sans", system-ui, sans-serif;
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-ink: var(--text);
+  --color-muted: var(--text-muted);
+  --color-divider: var(--divider);
+  --color-control: var(--control-border);
+  --color-action: var(--action);
+  --color-action-hover: var(--action-hover);
+  --color-action-pressed: var(--action-pressed);
+  --color-on-action: var(--on-action);
+  --text-display: 32px;
+  --text-display--line-height: 40px;
+  --text-title: 28px;
+  --text-title--line-height: 36px;
+  --text-section: 22px;
+  --text-section--line-height: 28px;
+  --text-body: 16px;
+  --text-body--line-height: 24px;
+  --text-label: 14px;
+  --text-label--line-height: 20px;
+  --text-meta: 12px;
+  --text-meta--line-height: 16px;
+}
+
+@layer base {
+  body {
+    background: var(--canvas);
+    color: var(--text);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--surface);
+  }
+
+  button, input, select, textarea {
+    font: inherit;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --feedback-duration: 0ms;
+  }
+}

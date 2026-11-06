@@ -147,3 +147,6 @@ export const listEvidence = (id: string, filters: URLSearchParams, signal?: Abor
   api<Get<'/api/v1/workspaces/{wid}/evidence'>>(`/workspaces/${id}/evidence?${filters}`, { signal });
 export const getEvidence = (id: string, pack: string, signal?: AbortSignal) =>
   api<EvidencePack>(`/workspaces/${id}/evidence/${encodeURIComponent(pack)}`, { signal });
+
+export const listAuditEvents = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/audit-events'>>(`/workspaces/${id}/audit-events?${filters}`, { signal });

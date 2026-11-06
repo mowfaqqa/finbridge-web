@@ -49,7 +49,7 @@ export function Expenses() {
   const key = useWorkspaceKey('expenses');
   const list = useQuery({ queryKey: [...key, filters.toString()], queryFn: ({ signal }) => listExpenses(workspace.id, filters, signal), enabled: isList });
   const expense = useQuery({ queryKey: [...key, 'detail', id], queryFn: ({ signal }) => getExpense(workspace.id, id!, signal), enabled: !!id });
-  const isForm = canWrite && (isNew || (editing && expense.data?.status === 'ACTIVE'));
+  const isForm = canWrite && (isNew || (editing && expense.data?.status === 'ACTIVE' && !expense.data.matched));
   const listHref = href({ expense: null, new: null, edit: null });
   const detailHref = (id: string) => href({ expense: id, new: null, edit: null });
   const sortHref = href({ sort: sort === 'asc' ? 'desc' : 'asc', after: null, before: null });
@@ -190,8 +190,9 @@ function ExpenseDetail({ expense, editHref }: { expense: Expense; editHref: stri
       <div><dt className="text-label text-muted">Category</dt><dd>{categories[expense.category]}</dd></div>
       <div><dt className="text-label text-muted">Reference</dt><dd className="break-words">{expense.reference ?? '—'}</dd></div>
     </dl>
+    {expense.matched && <p role="status" className="text-[var(--success-fg)]">Matched to a statement debit. Reverse the match before editing or voiding this expense.</p>}
     {expense.voidReason && <p className="text-[var(--danger-fg)]">Void reason {expense.voidReason}</p>}
-    {workspace.role !== 'VIEWER' && expense.status === 'ACTIVE' && <div className="flex flex-wrap gap-3">
+    {workspace.role !== 'VIEWER' && expense.status === 'ACTIVE' && !expense.matched && <div className="flex flex-wrap gap-3">
       <Link className={primaryAction} href={editHref}>Edit expense</Link>
       <Button secondary onClick={() => { voidExpense.reset(); command.reset(); dialog.current?.showModal(); }}>Void expense</Button>
     </div>}

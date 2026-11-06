@@ -115,3 +115,13 @@ export async function uploadStatement(ticket: ImportTicket, file: File) {
   }
   return response.json() as Promise<ImportBatch>;
 }
+
+export type StatementLine = Get<'/api/v1/workspaces/{wid}/statement-entries'>['items'][number];
+export type StatementDetail = Get<'/api/v1/workspaces/{wid}/statement-entries/{sid}'>;
+export type Candidate = Get<'/api/v1/workspaces/{wid}/statement-entries/{sid}/candidates'>[number];
+export const listStatements = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/statement-entries'>>(`/workspaces/${id}/statement-entries?${filters}`, { signal });
+export const getStatement = (id: string, entry: string, signal?: AbortSignal) =>
+  api<StatementDetail>(`/workspaces/${id}/statement-entries/${encodeURIComponent(entry)}`, { signal });
+export const getCandidates = (id: string, entry: string, q: string, signal?: AbortSignal) =>
+  api<Candidate[]>(`/workspaces/${id}/statement-entries/${entry}/candidates?${new URLSearchParams(q ? { q } : {})}`, { signal });

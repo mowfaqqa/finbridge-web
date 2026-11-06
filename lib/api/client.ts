@@ -66,3 +66,10 @@ export const listCustomers = (id: string, filters: URLSearchParams, signal?: Abo
   api<Get<'/api/v1/workspaces/{wid}/customers'>>(`/workspaces/${id}/customers?${filters}`, { signal });
 export const getCustomer = (id: string, customerId: string, signal?: AbortSignal) =>
   api<Customer>(`/workspaces/${id}/customers/${encodeURIComponent(customerId)}`, { signal });
+
+export type Invoice = Get<'/api/v1/workspaces/{wid}/invoices/{iid}'>;
+export type InvoiceInput = Body<'/api/v1/workspaces/{wid}/invoices'>;
+export const listInvoices = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/invoices'>>(`/workspaces/${id}/invoices?${filters}`, { signal });
+export const getInvoice = (id: string, invoiceId: string, signal?: AbortSignal) =>
+  api<Invoice>(`/workspaces/${id}/invoices/${encodeURIComponent(invoiceId)}`, { signal });

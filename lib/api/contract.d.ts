@@ -260,6 +260,70 @@ export interface paths {
         patch: operations["CustomersController_update"];
         trace?: never;
     };
+    "/api/v1/workspaces/{wid}/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InvoicesController_list"];
+        put?: never;
+        post: operations["InvoicesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/invoices/{iid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InvoicesController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["InvoicesController_update"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/invoices/{iid}/issue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["InvoicesController_issue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/invoices/{iid}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["InvoicesController_void"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -868,6 +932,394 @@ export interface operations {
                         /** Format: email */
                         email: string | null;
                         version: number;
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_list: {
+        parameters: {
+            query?: {
+                sort?: "asc" | "desc";
+                status?: "DRAFT" | "ISSUED" | "VOID";
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            customerId: string;
+                            customer: {
+                                displayName: string;
+                                /** Format: email */
+                                email: string | null;
+                            };
+                            /** Format: date */
+                            issueDate: string;
+                            /** Format: date */
+                            dueDate: string;
+                            /** @enum {string} */
+                            status: "DRAFT" | "OPEN" | "VOID";
+                            totalKobo: string;
+                            outstandingKobo: string | null;
+                            /** @enum {string} */
+                            currency: "NGN";
+                            number: string | null;
+                            /** Format: date-time */
+                            issuedAt: string | null;
+                            voidReason: string | null;
+                            overdue: boolean;
+                            version: number;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    customerId: string;
+                    /** Format: date */
+                    issueDate: string;
+                    /** Format: date */
+                    dueDate: string;
+                    lines: {
+                        description: string;
+                        quantity: number;
+                        unitKobo: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "VOID";
+                        totalKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "VOID";
+                        totalKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_update: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    customerId: string;
+                    /** Format: date */
+                    issueDate: string;
+                    /** Format: date */
+                    dueDate: string;
+                    lines: {
+                        description: string;
+                        quantity: number;
+                        unitKobo: string;
+                    }[];
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "VOID";
+                        totalKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_issue: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "VOID";
+                        totalKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_void: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "VOID";
+                        totalKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
                     };
                 };
             };

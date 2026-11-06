@@ -52,3 +52,15 @@ export function ErrorNotice({ error, retry, fieldLinks }: {
 export function Pending({ children }: { children: ReactNode }) {
   return <p role="status" className="rounded-[var(--radius-control)] bg-[var(--loading-bg)] p-3 text-[var(--info-fg)]">{children}</p>;
 }
+
+const badgeTones = {
+  info: 'bg-[var(--info-bg)] text-[var(--info-fg)]',
+  success: 'bg-[var(--success-bg)] text-[var(--success-fg)]',
+  warning: 'bg-[var(--warning-bg)] text-[var(--warning-fg)]',
+  danger: 'bg-[var(--danger-bg)] text-[var(--danger-fg)]',
+  neutral: 'bg-canvas text-muted',
+};
+
+export function Badge({ tone = 'neutral', children }: { tone?: keyof typeof badgeTones; children: ReactNode }) {
+  return <span className={`inline-flex rounded-full px-2 py-1 text-meta font-medium ${badgeTones[tone]}`}>{children}</span>;
+}

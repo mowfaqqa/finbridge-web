@@ -40,6 +40,7 @@ export function Customers() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-title font-semibold">Customers</h1>
+        <Link href={`/w/${workspace.slug}/invoices`} className={secondaryAction}>Invoices</Link>
         {canWrite && !id && !isNew && <Link href={href({ new: '1', customer: null })} className={primaryAction}>Add customer</Link>}
       </header>
       {isNew && !canWrite && <p className={panelStyle}>Your workspace role can view customers.</p>}

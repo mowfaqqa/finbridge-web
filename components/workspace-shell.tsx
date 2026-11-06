@@ -78,7 +78,7 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
   }
 
   const workspace = current.data;
-  const routes = [['overview', 'Overview'], ['invoices/customers', 'Customers']];
+  const routes = [['overview', 'Overview'], ['invoices', 'Invoices']];
   if (workspace.role === 'OWNER') routes.push(['settings/members', 'Members']);
   const nav = (name: string) => (
     <>
@@ -96,7 +96,7 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
       <nav aria-label="Workspace navigation" className="space-y-1">
         {routes.map(([route, label]) => {
           const href = `/w/${slug}/${route}`;
-          const active = pathname === href;
+          const active = pathname === href || pathname.startsWith(href + '/');
           return (
             <Link key={route} href={href} aria-current={active ? 'page' : undefined} onClick={() => dialog.current?.close()}
               className={`flex min-h-11 items-center rounded-[var(--radius-control)] px-3 py-2 ${active ? 'border-l-4 border-action bg-canvas font-semibold' : 'hover:bg-canvas'}`}>
@@ -113,9 +113,9 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
 
   return (
     <CurrentWorkspace.Provider value={{ workspace, actorId: session.data!.id }}>
-      <div className="min-h-screen min-[1200px]:grid min-[1200px]:grid-cols-[232px_minmax(0,1fr)]">
-        <aside className="hidden space-y-6 border-r border-divider bg-surface px-4 py-6 min-[1200px]:block">{nav('desktop')}</aside>
-        <header className="flex min-w-0 items-center justify-between gap-3 border-b border-divider bg-surface px-4 py-2 min-[768px]:px-6 min-[1200px]:hidden">
+      <div className="min-h-screen min-[1200px]:grid min-[1200px]:grid-cols-[232px_minmax(0,1fr)] print:block print:min-h-0">
+        <aside className="hidden space-y-6 border-r border-divider bg-surface px-4 py-6 min-[1200px]:block print:hidden">{nav('desktop')}</aside>
+        <header className="flex min-w-0 items-center justify-between gap-3 border-b border-divider bg-surface px-4 py-2 min-[768px]:px-6 min-[1200px]:hidden print:hidden">
           <div className="min-w-0">
             <p className="break-words font-semibold">{workspace.displayName}</p>
             <p className="text-label text-muted">{roleLabels[workspace.role]}</p>
@@ -130,7 +130,7 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
           <Button secondary onClick={() => dialog.current?.close()}>Close menu</Button>
           {nav('mobile')}
         </dialog>
-        <main id="main" tabIndex={-1} className="min-w-0 px-4 py-6 min-[768px]:px-6 min-[1200px]:px-8 min-[1200px]:py-8">
+        <main id="main" tabIndex={-1} className="min-w-0 px-4 py-6 min-[768px]:px-6 min-[1200px]:px-8 min-[1200px]:py-8 print:p-0">
           {children}
         </main>
       </div>

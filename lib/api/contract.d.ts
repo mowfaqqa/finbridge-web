@@ -228,6 +228,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{wid}/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomersController_list"];
+        put?: never;
+        post: operations["CustomersController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/customers/{cid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomersController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["CustomersController_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -688,6 +720,153 @@ export interface operations {
                         sector: string | null;
                         /** @enum {string} */
                         role: "OWNER" | "OPERATOR" | "VIEWER";
+                        version: number;
+                    };
+                };
+            };
+        };
+    };
+    CustomersController_list: {
+        parameters: {
+            query?: {
+                sort?: "asc" | "desc";
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                            version: number;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    CustomersController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    displayName: string;
+                    /** Format: email */
+                    email?: string | null;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        displayName: string;
+                        /** Format: email */
+                        email: string | null;
+                        version: number;
+                    };
+                };
+            };
+        };
+    };
+    CustomersController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+                cid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        displayName: string;
+                        /** Format: email */
+                        email: string | null;
+                        version: number;
+                    };
+                };
+            };
+        };
+    };
+    CustomersController_update: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                cid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    displayName?: string;
+                    /** Format: email */
+                    email?: string | null;
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        displayName: string;
+                        /** Format: email */
+                        email: string | null;
                         version: number;
                     };
                 };

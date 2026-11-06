@@ -59,3 +59,10 @@ export const inviteMember = (id: string, body: InvitationInput, key: string) =>
   api<Invitation>(`/workspaces/${id}/invitations`, { method: 'POST', body, key });
 export const acceptInvitation = (token: string, key: string) =>
   api<Workspace>('/invitations/accept', { method: 'POST', body: { token }, key });
+
+export type Customer = Get<'/api/v1/workspaces/{wid}/customers/{cid}'>;
+export type CustomerInput = Body<'/api/v1/workspaces/{wid}/customers'>;
+export const listCustomers = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/customers'>>(`/workspaces/${id}/customers?${filters}`, { signal });
+export const getCustomer = (id: string, customerId: string, signal?: AbortSignal) =>
+  api<Customer>(`/workspaces/${id}/customers/${encodeURIComponent(customerId)}`, { signal });

@@ -8,13 +8,19 @@ import { Button, ErrorNotice, fieldStyle, Pending, secondaryAction } from './ui'
 import { getWorkspace, signOut, type Workspace } from '@/lib/api/client';
 import { changeIdentity, sessionQuery, workspacesQuery } from '@/lib/queries';
 
-const CurrentWorkspace = createContext<Workspace | null>(null);
+const CurrentWorkspace = createContext<{ workspace: Workspace; actorId: string } | null>(null);
 export const roleLabels = { OWNER: 'Owner', OPERATOR: 'Finance operator', VIEWER: 'Read-only advisor' };
 
 export function useWorkspace() {
-  const workspace = useContext(CurrentWorkspace);
-  if (!workspace) throw new Error('Workspace context is unavailable');
-  return workspace;
+  const context = useContext(CurrentWorkspace);
+  if (!context) throw new Error('Workspace context is unavailable');
+  return context.workspace;
+}
+
+export function useWorkspaceKey(...suffix: unknown[]) {
+  const context = useContext(CurrentWorkspace);
+  if (!context) throw new Error('Workspace context is unavailable');
+  return ['workspace', context.actorId, context.workspace.id, ...suffix];
 }
 
 export function WorkspaceShell({ slug, children }: { slug: string; children: ReactNode }) {
@@ -72,7 +78,7 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
   }
 
   const workspace = current.data;
-  const routes = [['overview', 'Overview']];
+  const routes = [['overview', 'Overview'], ['invoices/customers', 'Customers']];
   if (workspace.role === 'OWNER') routes.push(['settings/members', 'Members']);
   const nav = (name: string) => (
     <>
@@ -106,7 +112,7 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
   );
 
   return (
-    <CurrentWorkspace.Provider value={workspace}>
+    <CurrentWorkspace.Provider value={{ workspace, actorId: session.data!.id }}>
       <div className="min-h-screen min-[1200px]:grid min-[1200px]:grid-cols-[232px_minmax(0,1fr)]">
         <aside className="hidden space-y-6 border-r border-divider bg-surface px-4 py-6 min-[1200px]:block">{nav('desktop')}</aside>
         <header className="flex min-w-0 items-center justify-between gap-3 border-b border-divider bg-surface px-4 py-2 min-[768px]:px-6 min-[1200px]:hidden">

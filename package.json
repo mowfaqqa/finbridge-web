@@ -12,7 +12,8 @@
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
     "lint": "eslint .",
-    "api:generate": "openapi-typescript http://127.0.0.1:4000/api/v1/openapi.json -o lib/api/contract.d.ts"
+    "api:generate": "openapi-typescript http://127.0.0.1:4000/api/v1/openapi.json -o lib/api/contract.d.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans": "^5.2.0",
@@ -30,6 +31,8 @@
     "eslint-config-next": "^16.4.5",
     "tailwindcss": "^4.1.0",
     "typescript": "~5.9.0",
-    "openapi-typescript": "^7.10.0"
+    "openapi-typescript": "^7.10.0",
+    "@playwright/test": "^1.58.0",
+    "@axe-core/playwright": "^4.11.0"
   }
 }

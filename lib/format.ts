@@ -24,3 +24,10 @@ export function koboToDecimal(input: string) {
 
 export const formatDate = (value: string) => dateLabel.format(new Date(`${value}T00:00:00Z`));
 export const todayInLagos = () => lagos.format(new Date());
+
+const lagosTime = new Intl.DateTimeFormat('en-NG', {
+  dateStyle: 'medium', timeStyle: 'short', timeZone: 'Africa/Lagos',
+});
+const monthLabel = new Intl.DateTimeFormat('en-NG', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+export const formatTime = (value: string) => lagosTime.format(new Date(value)) + ' WAT';
+export const formatMonth = (value: string) => monthLabel.format(new Date(`${value}-01T00:00:00Z`));

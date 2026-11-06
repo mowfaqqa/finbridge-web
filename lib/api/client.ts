@@ -26,6 +26,7 @@ export async function api<T>(path: string, options?: { method?: string; body?: u
     body: options?.body === undefined ? undefined : JSON.stringify(options.body),
     headers: {
       Accept: 'application/json',
+      'X-Request-Id': crypto.randomUUID(),
       ...(options?.body !== undefined && { 'Content-Type': 'application/json' }),
       ...(options?.key && { 'Idempotency-Key': options.key }),
     },
@@ -107,7 +108,7 @@ export const listImportRows = (id: string, batch: string, filters: URLSearchPara
 export async function uploadStatement(ticket: ImportTicket, file: File) {
   const response = await fetch(ticket.uploadUrl, {
     method: 'PUT', credentials: 'same-origin',
-    headers: { 'Content-Type': 'text/csv', 'X-Upload-Ticket': ticket.uploadTicket }, body: file,
+    headers: { 'Content-Type': 'text/csv', 'X-Upload-Ticket': ticket.uploadTicket, 'X-Request-Id': crypto.randomUUID() }, body: file,
   });
   if (!response.ok) {
     const problem = await response.json().catch(() => ({}));
@@ -131,3 +132,22 @@ export const listTransferCandidates = (id: string, entry: string, filters: URLSe
   api<Get<'/api/v1/workspaces/{wid}/statement-entries/{sid}/transfer-candidates'>>(
     `/workspaces/${id}/statement-entries/${entry}/transfer-candidates?${filters}`, { signal },
   );
+
+export type CashFlow = Get<'/api/v1/workspaces/{wid}/reports/cash-flow'>;
+export type Receivables = Get<'/api/v1/workspaces/{wid}/reports/receivables'>;
+export const getCashFlow = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<CashFlow>(`/workspaces/${id}/reports/cash-flow?${filters}`, { signal });
+export const getReceivables = (id: string, signal?: AbortSignal) =>
+  api<Receivables>(`/workspaces/${id}/reports/receivables`, { signal });
+
+export type Readiness = Get<'/api/v1/workspaces/{wid}/evidence/readiness'>;
+export type EvidencePack = Get<'/api/v1/workspaces/{wid}/evidence/{eid}'>;
+export type EvidenceSummary = Get<'/api/v1/workspaces/{wid}/evidence'>['items'][number];
+export const getReadiness = (id: string, signal?: AbortSignal) => api<Readiness>(`/workspaces/${id}/evidence/readiness`, { signal });
+export const listEvidence = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/evidence'>>(`/workspaces/${id}/evidence?${filters}`, { signal });
+export const getEvidence = (id: string, pack: string, signal?: AbortSignal) =>
+  api<EvidencePack>(`/workspaces/${id}/evidence/${encodeURIComponent(pack)}`, { signal });
+
+export const listAuditEvents = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/audit-events'>>(`/workspaces/${id}/audit-events?${filters}`, { signal });

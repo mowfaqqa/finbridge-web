@@ -40,7 +40,7 @@ export function Reconciliation() {
   const accountKey = useWorkspaceKey('accounts');
   const sort = parameters.get('sort') === 'asc' ? 'asc' : 'desc';
   const filters = new URLSearchParams({ sort });
-  for (const name of ['q', 'status', 'accountId', 'start', 'end', 'after', 'before']) {
+  for (const name of ['q', 'status', 'accountId', 'accounts', 'start', 'end', 'after', 'before']) {
     const value = parameters.get(name);
     if (value) filters.set(name, value);
   }
@@ -64,12 +64,12 @@ export function Reconciliation() {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
         const values = Object.fromEntries(['q', 'accountId', 'status', 'start', 'end'].map((name) => [name, String(form.get(name) ?? '').trim()]));
-        router.push(href({ ...values, before: null, after: null, entry: null, candidateSearch: null }));
+        router.push(href({ ...values, accounts: values.accountId ? null : filters.get('accounts'), before: null, after: null, entry: null, candidateSearch: null }));
       }}>
       <div className="space-y-1">
         <label htmlFor="recon-account" className="block text-label font-medium">Account</label>
         <select id="recon-account" name="accountId" className={fieldStyle} defaultValue={filters.get('accountId') ?? ''}>
-          <option value="">All accounts</option>
+          <option value="">{filters.get('accounts') ? 'Selected report accounts' : 'All accounts'}</option>
           {accounts.data?.items.map((account) => <option key={account.id} value={account.id}>{accountLabel(account)}</option>)}
         </select>
       </div>

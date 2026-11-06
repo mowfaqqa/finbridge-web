@@ -13,3 +13,9 @@ Start the API and apply its migrations first. Open http://localhost:3000, choose
 Regenerate `lib/api/contract.d.ts` with `pnpm api:generate` against the local API. You can also run `pnpm exec openapi-typescript path/to/openapi.json -o lib/api/contract.d.ts` against the exported contract from the backend repo.
 
 If the backend enables managed OIDC, the sign-in screen also displays **Continue to sign in**. The callback uses this frontend origin and the same API proxy as authenticated workspace calls.
+
+## Local release checks
+
+Use the API repo's `pnpm demo:seed` command to create a reconciled synthetic workspace and a ready evidence pack. The command prints their browser links. Sign in as **SME owner**, **Finance operator**, or **Read-only advisor** to explore the fixture.
+
+Run `pnpm exec playwright install chromium`, then `pnpm build && pnpm test:e2e` for the standalone browser and axe check. To run the real two-app check, keep both apps running and set `FINBRIDGE_E2E_ORIGIN=http://localhost:3000`, `FINBRIDGE_E2E_WORKSPACE` and `FINBRIDGE_E2E_PACK` to the fixture's slug and pack ID. `PLAYWRIGHT_CHANNEL=chrome` uses an installed Chrome.

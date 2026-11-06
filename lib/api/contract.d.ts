@@ -228,6 +228,182 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{wid}/customers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomersController_list"];
+        put?: never;
+        post: operations["CustomersController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/customers/{cid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CustomersController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["CustomersController_update"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InvoicesController_list"];
+        put?: never;
+        post: operations["InvoicesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/invoices/{iid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["InvoicesController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["InvoicesController_update"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/invoices/{iid}/issue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["InvoicesController_issue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/invoices/{iid}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["InvoicesController_void"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/expenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ExpensesController_list"];
+        put?: never;
+        post: operations["ExpensesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/expenses/{eid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ExpensesController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ExpensesController_update"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/expenses/{eid}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ExpensesController_void"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/invoices/{iid}/settlements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SettlementsController_list"];
+        put?: never;
+        post: operations["SettlementsController_record"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/settlements/{sid}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SettlementsController_reverse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -689,6 +865,936 @@ export interface operations {
                         /** @enum {string} */
                         role: "OWNER" | "OPERATOR" | "VIEWER";
                         version: number;
+                    };
+                };
+            };
+        };
+    };
+    CustomersController_list: {
+        parameters: {
+            query?: {
+                sort?: "asc" | "desc";
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                            version: number;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    CustomersController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    displayName: string;
+                    /** Format: email */
+                    email?: string | null;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        displayName: string;
+                        /** Format: email */
+                        email: string | null;
+                        version: number;
+                    };
+                };
+            };
+        };
+    };
+    CustomersController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+                cid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        displayName: string;
+                        /** Format: email */
+                        email: string | null;
+                        version: number;
+                    };
+                };
+            };
+        };
+    };
+    CustomersController_update: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                cid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    displayName?: string;
+                    /** Format: email */
+                    email?: string | null;
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        displayName: string;
+                        /** Format: email */
+                        email: string | null;
+                        version: number;
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_list: {
+        parameters: {
+            query?: {
+                sort?: "asc" | "desc";
+                status?: "DRAFT" | "ISSUED" | "OPEN" | "PART_PAID" | "PAID" | "VOID";
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            customerId: string;
+                            customer: {
+                                displayName: string;
+                                /** Format: email */
+                                email: string | null;
+                            };
+                            /** Format: date */
+                            issueDate: string;
+                            /** Format: date */
+                            dueDate: string;
+                            /** @enum {string} */
+                            status: "DRAFT" | "OPEN" | "PART_PAID" | "PAID" | "VOID";
+                            totalKobo: string;
+                            settledKobo: string;
+                            outstandingKobo: string | null;
+                            /** @enum {string} */
+                            currency: "NGN";
+                            number: string | null;
+                            /** Format: date-time */
+                            issuedAt: string | null;
+                            voidReason: string | null;
+                            overdue: boolean;
+                            version: number;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    customerId: string;
+                    /** Format: date */
+                    issueDate: string;
+                    /** Format: date */
+                    dueDate: string;
+                    lines: {
+                        description: string;
+                        quantity: number;
+                        unitKobo: string;
+                    }[];
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "PART_PAID" | "PAID" | "VOID";
+                        totalKobo: string;
+                        settledKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "PART_PAID" | "PAID" | "VOID";
+                        totalKobo: string;
+                        settledKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_update: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    customerId: string;
+                    /** Format: date */
+                    issueDate: string;
+                    /** Format: date */
+                    dueDate: string;
+                    lines: {
+                        description: string;
+                        quantity: number;
+                        unitKobo: string;
+                    }[];
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "PART_PAID" | "PAID" | "VOID";
+                        totalKobo: string;
+                        settledKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_issue: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "PART_PAID" | "PAID" | "VOID";
+                        totalKobo: string;
+                        settledKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    InvoicesController_void: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        customerId: string;
+                        customer: {
+                            displayName: string;
+                            /** Format: email */
+                            email: string | null;
+                        };
+                        /** Format: date */
+                        issueDate: string;
+                        /** Format: date */
+                        dueDate: string;
+                        /** @enum {string} */
+                        status: "DRAFT" | "OPEN" | "PART_PAID" | "PAID" | "VOID";
+                        totalKobo: string;
+                        settledKobo: string;
+                        outstandingKobo: string | null;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        number: string | null;
+                        /** Format: date-time */
+                        issuedAt: string | null;
+                        voidReason: string | null;
+                        overdue: boolean;
+                        version: number;
+                        lines: {
+                            description: string;
+                            quantity: number;
+                            unitKobo: string;
+                            position: number;
+                            totalKobo: string;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_list: {
+        parameters: {
+            query?: {
+                sort?: "asc" | "desc";
+                status?: "ACTIVE" | "VOID";
+                category?: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: date */
+                            date: string;
+                            payee: string;
+                            /** @enum {string} */
+                            category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                            amountKobo: string;
+                            reference: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            version: number;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "VOID";
+                            /** @enum {string} */
+                            currency: "NGN";
+                            voidReason: string | null;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    date: string;
+                    payee: string;
+                    /** @enum {string} */
+                    category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                    amountKobo: string;
+                    reference?: string | null;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        date: string;
+                        payee: string;
+                        /** @enum {string} */
+                        category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                        amountKobo: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        version: number;
+                        /** @enum {string} */
+                        status: "ACTIVE" | "VOID";
+                        /** @enum {string} */
+                        currency: "NGN";
+                        voidReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        date: string;
+                        payee: string;
+                        /** @enum {string} */
+                        category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                        amountKobo: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        version: number;
+                        /** @enum {string} */
+                        status: "ACTIVE" | "VOID";
+                        /** @enum {string} */
+                        currency: "NGN";
+                        voidReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_update: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    date?: string;
+                    payee?: string;
+                    /** @enum {string} */
+                    category?: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                    amountKobo?: string;
+                    reference?: string | null;
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        date: string;
+                        payee: string;
+                        /** @enum {string} */
+                        category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                        amountKobo: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        version: number;
+                        /** @enum {string} */
+                        status: "ACTIVE" | "VOID";
+                        /** @enum {string} */
+                        currency: "NGN";
+                        voidReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_void: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        date: string;
+                        payee: string;
+                        /** @enum {string} */
+                        category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                        amountKobo: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        version: number;
+                        /** @enum {string} */
+                        status: "ACTIVE" | "VOID";
+                        /** @enum {string} */
+                        currency: "NGN";
+                        voidReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    SettlementsController_list: {
+        parameters: {
+            query?: {
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            amountKobo: string;
+                            /** Format: date */
+                            receiptDate: string;
+                            reference: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            invoiceId: string;
+                            /** @enum {string} */
+                            currency: "NGN";
+                            /** @enum {string} */
+                            source: "MANUAL" | "STATEMENT";
+                            version: number;
+                            /** Format: date-time */
+                            reversedAt: string | null;
+                            reversalReason: string | null;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    SettlementsController_record: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                iid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    amountKobo: string;
+                    /** Format: date */
+                    receiptDate: string;
+                    reference?: string | null;
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        amountKobo: string;
+                        /** Format: date */
+                        receiptDate: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        invoiceId: string;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        /** @enum {string} */
+                        source: "MANUAL" | "STATEMENT";
+                        version: number;
+                        /** Format: date-time */
+                        reversedAt: string | null;
+                        reversalReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    SettlementsController_reverse: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                sid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        amountKobo: string;
+                        /** Format: date */
+                        receiptDate: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        invoiceId: string;
+                        /** @enum {string} */
+                        currency: "NGN";
+                        /** @enum {string} */
+                        source: "MANUAL" | "STATEMENT";
+                        version: number;
+                        /** Format: date-time */
+                        reversedAt: string | null;
+                        reversalReason: string | null;
                     };
                 };
             };

@@ -59,3 +59,29 @@ export const inviteMember = (id: string, body: InvitationInput, key: string) =>
   api<Invitation>(`/workspaces/${id}/invitations`, { method: 'POST', body, key });
 export const acceptInvitation = (token: string, key: string) =>
   api<Workspace>('/invitations/accept', { method: 'POST', body: { token }, key });
+
+export type Customer = Get<'/api/v1/workspaces/{wid}/customers/{cid}'>;
+export type CustomerInput = Body<'/api/v1/workspaces/{wid}/customers'>;
+export const listCustomers = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/customers'>>(`/workspaces/${id}/customers?${filters}`, { signal });
+export const getCustomer = (id: string, customerId: string, signal?: AbortSignal) =>
+  api<Customer>(`/workspaces/${id}/customers/${encodeURIComponent(customerId)}`, { signal });
+
+export type Invoice = Get<'/api/v1/workspaces/{wid}/invoices/{iid}'>;
+export type InvoiceInput = Body<'/api/v1/workspaces/{wid}/invoices'>;
+export const listInvoices = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/invoices'>>(`/workspaces/${id}/invoices?${filters}`, { signal });
+export const getInvoice = (id: string, invoiceId: string, signal?: AbortSignal) =>
+  api<Invoice>(`/workspaces/${id}/invoices/${encodeURIComponent(invoiceId)}`, { signal });
+
+export type Expense = Get<'/api/v1/workspaces/{wid}/expenses/{eid}'>;
+export type ExpenseInput = Body<'/api/v1/workspaces/{wid}/expenses'>;
+export const listExpenses = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/expenses'>>(`/workspaces/${id}/expenses?${filters}`, { signal });
+export const getExpense = (id: string, expenseId: string, signal?: AbortSignal) =>
+  api<Expense>(`/workspaces/${id}/expenses/${encodeURIComponent(expenseId)}`, { signal });
+
+export type Settlement = Get<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>['items'][number];
+export type SettlementInput = Body<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>;
+export const listSettlements = (id: string, invoiceId: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>>(`/workspaces/${id}/invoices/${invoiceId}/settlements?${filters}`, { signal });

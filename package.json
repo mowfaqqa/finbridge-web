@@ -2,14 +2,17 @@
   "name": "finbridge-web",
   "version": "0.1.0",
   "private": true,
-  "engines": { "node": ">=22.12" },
+  "engines": {
+    "node": ">=22.12"
+  },
   "packageManager": "pnpm@10.18.2",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "typecheck": "next typegen && tsc --noEmit",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "api:generate": "openapi-typescript http://127.0.0.1:4000/api/v1/openapi.json -o lib/api/contract.d.ts"
   },
   "dependencies": {
     "@fontsource/ibm-plex-sans": "^5.2.0",
@@ -26,6 +29,7 @@
     "eslint": "^9.0.0",
     "eslint-config-next": "^16.4.5",
     "tailwindcss": "^4.1.0",
-    "typescript": "~5.9.0"
+    "typescript": "~5.9.0",
+    "openapi-typescript": "^7.10.0"
   }
 }

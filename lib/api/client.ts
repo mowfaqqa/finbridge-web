@@ -26,6 +26,7 @@ export async function api<T>(path: string, options?: { method?: string; body?: u
     body: options?.body === undefined ? undefined : JSON.stringify(options.body),
     headers: {
       Accept: 'application/json',
+      'X-Request-Id': crypto.randomUUID(),
       ...(options?.body !== undefined && { 'Content-Type': 'application/json' }),
       ...(options?.key && { 'Idempotency-Key': options.key }),
     },
@@ -107,7 +108,7 @@ export const listImportRows = (id: string, batch: string, filters: URLSearchPara
 export async function uploadStatement(ticket: ImportTicket, file: File) {
   const response = await fetch(ticket.uploadUrl, {
     method: 'PUT', credentials: 'same-origin',
-    headers: { 'Content-Type': 'text/csv', 'X-Upload-Ticket': ticket.uploadTicket }, body: file,
+    headers: { 'Content-Type': 'text/csv', 'X-Upload-Ticket': ticket.uploadTicket, 'X-Request-Id': crypto.randomUUID() }, body: file,
   });
   if (!response.ok) {
     const problem = await response.json().catch(() => ({}));

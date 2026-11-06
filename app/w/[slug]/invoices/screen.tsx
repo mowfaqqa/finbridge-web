@@ -11,11 +11,12 @@ import { api, getInvoice, listInvoices, type Invoice } from '@/lib/api/client';
 import { formatDate, formatMoney } from '@/lib/format';
 import { useCommandKey } from '@/lib/use-command-key';
 import { InvoiceForm } from './form';
+import { SettlementHistory } from './settlements';
 
-const statusLabels = { DRAFT: 'Draft', OPEN: 'Open', VOID: 'Void' };
+const statusLabels = { DRAFT: 'Draft', OPEN: 'Open', PART_PAID: 'Part paid', PAID: 'Paid', VOID: 'Void' };
 function InvoiceStatus({ status, overdue }: Pick<Invoice, 'status' | 'overdue'>) {
   return <span className="inline-flex flex-wrap gap-1">
-    <Badge tone={status === 'OPEN' ? 'info' : status === 'VOID' ? 'danger' : 'neutral'}>{statusLabels[status]}</Badge>
+    <Badge tone={status === 'PAID' ? 'success' : status === 'VOID' ? 'danger' : status === 'DRAFT' ? 'neutral' : 'info'}>{statusLabels[status]}</Badge>
     {overdue && <Badge tone="warning">Overdue</Badge>}
   </span>;
 }
@@ -44,8 +45,8 @@ export function Invoices() {
   const invoice = useQuery({
     queryKey: [...queryKey, 'detail', id], queryFn: ({ signal }) => getInvoice(workspace.id, id!, signal), enabled: !!id,
   });
-  const listHref = href({ invoice: null, new: null, edit: null });
-  const detailHref = (id: string) => href({ invoice: id, new: null, edit: null });
+  const listHref = href({ invoice: null, new: null, edit: null, receiptAfter: null, receiptBefore: null });
+  const detailHref = (id: string) => href({ invoice: id, new: null, edit: null, receiptAfter: null, receiptBefore: null });
   const sortHref = href({ sort: sort === 'asc' ? 'desc' : 'asc', before: null, after: null });
 
   return (
@@ -76,7 +77,8 @@ export function Invoices() {
           <div className="space-y-1">
             <label className="block text-label font-medium" htmlFor="invoice-status">Status</label>
             <select id="invoice-status" name="status" className={fieldStyle} defaultValue={filters.get('status') ?? ''}>
-              <option value="">All statuses</option><option value="DRAFT">Draft</option><option value="ISSUED">Issued</option><option value="VOID">Void</option>
+              <option value="">All statuses</option><option value="DRAFT">Draft</option><option value="OPEN">Open</option>
+              <option value="PART_PAID">Part paid</option><option value="PAID">Paid</option><option value="VOID">Void</option>
             </select>
           </div>
           <Button secondary type="submit">Apply filters</Button>
@@ -193,13 +195,14 @@ function InvoiceDetail({ invoice, editHref }: { invoice: Invoice; editHref: stri
       {invoice.voidReason && <p className="rounded-[var(--radius-control)] bg-[var(--danger-bg)] p-3 text-[var(--danger-fg)]">Void reason {invoice.voidReason}</p>}
     </article>
     <div className="flex flex-wrap gap-3 print:hidden">
-      {invoice.status !== 'DRAFT' && <Button onClick={() => window.print()}>Print invoice</Button>}
+      {invoice.status !== 'DRAFT' && <Button secondary={workspace.role !== 'VIEWER' && invoice.outstandingKobo !== null && invoice.outstandingKobo !== '0'} onClick={() => window.print()}>Print invoice</Button>}
       {workspace.role !== 'VIEWER' && invoice.status === 'DRAFT' && <>
         <Button onClick={() => confirm('issue')}>Issue invoice</Button>
         <Link className={secondaryAction} href={editHref}>Edit draft</Link>
       </>}
-      {workspace.role !== 'VIEWER' && invoice.status === 'OPEN' && <Button secondary onClick={() => confirm('void')}>Void invoice</Button>}
+      {workspace.role !== 'VIEWER' && invoice.status === 'OPEN' && invoice.settledKobo === '0' && <Button secondary onClick={() => confirm('void')}>Void invoice</Button>}
     </div>
+    {invoice.status !== 'DRAFT' && <SettlementHistory invoice={invoice} />}
     <dialog ref={dialog} aria-labelledby="invoice-action"
       className="fixed inset-0 m-auto w-[calc(100%-2rem)] max-w-[420px] rounded-[var(--radius-panel)] border border-divider bg-surface p-6 text-ink shadow-[var(--shadow-overlay)] backdrop:bg-slate-950/35 print:hidden">
       <form className="space-y-4" onSubmit={(event) => {

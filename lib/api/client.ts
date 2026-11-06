@@ -80,3 +80,8 @@ export const listExpenses = (id: string, filters: URLSearchParams, signal?: Abor
   api<Get<'/api/v1/workspaces/{wid}/expenses'>>(`/workspaces/${id}/expenses?${filters}`, { signal });
 export const getExpense = (id: string, expenseId: string, signal?: AbortSignal) =>
   api<Expense>(`/workspaces/${id}/expenses/${encodeURIComponent(expenseId)}`, { signal });
+
+export type Settlement = Get<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>['items'][number];
+export type SettlementInput = Body<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>;
+export const listSettlements = (id: string, invoiceId: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>>(`/workspaces/${id}/invoices/${invoiceId}/settlements?${filters}`, { signal });

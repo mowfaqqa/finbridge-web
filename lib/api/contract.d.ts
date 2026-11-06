@@ -724,6 +724,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{wid}/evidence/readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["EvidenceController_readiness"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/evidence": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["EvidenceController_list"];
+        put?: never;
+        post: operations["EvidenceController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/evidence/{eid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["EvidenceController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/evidence/{eid}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EvidenceController_retry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/evidence/{eid}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["EvidenceController_download"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3296,6 +3376,386 @@ export interface operations {
                             amountKobo: string;
                         }[];
                     };
+                };
+            };
+        };
+    };
+    EvidenceController_readiness: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        workspaceName: string;
+                        /** Format: date-time */
+                        asOf: string;
+                        rulesVersion: string;
+                        incomplete: boolean;
+                        completed: number;
+                        applicable: number;
+                        checks: {
+                            key: string;
+                            label: string;
+                            /** @enum {string} */
+                            state: "COMPLETE" | "NEEDS_ATTENTION" | "NOT_APPLICABLE";
+                            numerator: number | null;
+                            denominator: number | null;
+                            detail: string;
+                            action: string | null;
+                        }[];
+                        cashFlow: {
+                            /** @enum {string} */
+                            currency: "NGN";
+                            period: {
+                                /** Format: date */
+                                start: string;
+                                /** Format: date */
+                                end: string;
+                            };
+                            /** Format: date-time */
+                            asOf: string;
+                            /** @enum {string} */
+                            status: "NO_DATA" | "PARTIAL" | "COMPLETE";
+                            /** Format: date-time */
+                            lastImportAt: string | null;
+                            accounts: {
+                                /** Format: uuid */
+                                id: string;
+                                label: string;
+                                lastFour: string | null;
+                                coveredDays: number;
+                                totalDays: number;
+                                coveredRanges: {
+                                    /** Format: date */
+                                    start: string;
+                                    /** Format: date */
+                                    end: string;
+                                }[];
+                                gaps: {
+                                    /** Format: date */
+                                    start: string;
+                                    /** Format: date */
+                                    end: string;
+                                }[];
+                                /** Format: date-time */
+                                lastImportAt: string | null;
+                            }[];
+                            totals: {
+                                inflowKobo: string;
+                                outflowKobo: string;
+                                netKobo: string;
+                            };
+                            monthly: {
+                                inflowKobo: string;
+                                outflowKobo: string;
+                                netKobo: string;
+                                month: string;
+                            }[];
+                            unmatchedCount: number;
+                            nonTransferCount: number;
+                            matchedCount: number;
+                        };
+                        receivables: {
+                            /** @enum {string} */
+                            currency: "NGN";
+                            /** Format: date-time */
+                            asOf: string;
+                            /** Format: date */
+                            asOfDate: string;
+                            totalOpenKobo: string;
+                            currentKobo: string;
+                            overdueKobo: string;
+                            aging: {
+                                label: string;
+                                amountKobo: string;
+                            }[];
+                        };
+                        sourceBatchIds: string[];
+                    };
+                };
+            };
+        };
+    };
+    EvidenceController_list: {
+        parameters: {
+            query?: {
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            /** @enum {string} */
+                            state: "QUEUED" | "READY" | "FAILED" | "EXPIRED";
+                            /** Format: date-time */
+                            asOf: string;
+                            /** Format: date-time */
+                            expiresAt: string | null;
+                            incomplete: boolean;
+                            version: number;
+                            problemCode: string | null;
+                            checksum: string;
+                            rulesVersion: string;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    EvidenceController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @default false */
+                    confirmIncomplete?: boolean;
+                };
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "QUEUED" | "READY" | "FAILED" | "EXPIRED";
+                        statusUrl: string;
+                    };
+                };
+            };
+        };
+    };
+    EvidenceController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "QUEUED" | "READY" | "FAILED" | "EXPIRED";
+                        /** Format: date-time */
+                        asOf: string;
+                        /** Format: date-time */
+                        expiresAt: string | null;
+                        incomplete: boolean;
+                        version: number;
+                        problemCode: string | null;
+                        checksum: string;
+                        rulesVersion: string;
+                        evidence: {
+                            workspaceName: string;
+                            /** Format: date-time */
+                            asOf: string;
+                            rulesVersion: string;
+                            incomplete: boolean;
+                            completed: number;
+                            applicable: number;
+                            checks: {
+                                key: string;
+                                label: string;
+                                /** @enum {string} */
+                                state: "COMPLETE" | "NEEDS_ATTENTION" | "NOT_APPLICABLE";
+                                numerator: number | null;
+                                denominator: number | null;
+                                detail: string;
+                                action: string | null;
+                            }[];
+                            cashFlow: {
+                                /** @enum {string} */
+                                currency: "NGN";
+                                period: {
+                                    /** Format: date */
+                                    start: string;
+                                    /** Format: date */
+                                    end: string;
+                                };
+                                /** Format: date-time */
+                                asOf: string;
+                                /** @enum {string} */
+                                status: "NO_DATA" | "PARTIAL" | "COMPLETE";
+                                /** Format: date-time */
+                                lastImportAt: string | null;
+                                accounts: {
+                                    /** Format: uuid */
+                                    id: string;
+                                    label: string;
+                                    lastFour: string | null;
+                                    coveredDays: number;
+                                    totalDays: number;
+                                    coveredRanges: {
+                                        /** Format: date */
+                                        start: string;
+                                        /** Format: date */
+                                        end: string;
+                                    }[];
+                                    gaps: {
+                                        /** Format: date */
+                                        start: string;
+                                        /** Format: date */
+                                        end: string;
+                                    }[];
+                                    /** Format: date-time */
+                                    lastImportAt: string | null;
+                                }[];
+                                totals: {
+                                    inflowKobo: string;
+                                    outflowKobo: string;
+                                    netKobo: string;
+                                };
+                                monthly: {
+                                    inflowKobo: string;
+                                    outflowKobo: string;
+                                    netKobo: string;
+                                    month: string;
+                                }[];
+                                unmatchedCount: number;
+                                nonTransferCount: number;
+                                matchedCount: number;
+                            };
+                            receivables: {
+                                /** @enum {string} */
+                                currency: "NGN";
+                                /** Format: date-time */
+                                asOf: string;
+                                /** Format: date */
+                                asOfDate: string;
+                                totalOpenKobo: string;
+                                currentKobo: string;
+                                overdueKobo: string;
+                                aging: {
+                                    label: string;
+                                    amountKobo: string;
+                                }[];
+                            };
+                            sourceBatchIds: string[];
+                        };
+                    };
+                };
+            };
+        };
+    };
+    EvidenceController_retry: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** @enum {string} */
+                        state: "QUEUED" | "READY" | "FAILED" | "EXPIRED";
+                        statusUrl: string;
+                    };
+                };
+            };
+        };
+    };
+    EvidenceController_download: {
+        parameters: {
+            query?: never;
+            header?: {
+                Range?: string;
+            };
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            206: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
                 };
             };
         };

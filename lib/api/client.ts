@@ -138,3 +138,12 @@ export const getCashFlow = (id: string, filters: URLSearchParams, signal?: Abort
   api<CashFlow>(`/workspaces/${id}/reports/cash-flow?${filters}`, { signal });
 export const getReceivables = (id: string, signal?: AbortSignal) =>
   api<Receivables>(`/workspaces/${id}/reports/receivables`, { signal });
+
+export type Readiness = Get<'/api/v1/workspaces/{wid}/evidence/readiness'>;
+export type EvidencePack = Get<'/api/v1/workspaces/{wid}/evidence/{eid}'>;
+export type EvidenceSummary = Get<'/api/v1/workspaces/{wid}/evidence'>['items'][number];
+export const getReadiness = (id: string, signal?: AbortSignal) => api<Readiness>(`/workspaces/${id}/evidence/readiness`, { signal });
+export const listEvidence = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/evidence'>>(`/workspaces/${id}/evidence?${filters}`, { signal });
+export const getEvidence = (id: string, pack: string, signal?: AbortSignal) =>
+  api<EvidencePack>(`/workspaces/${id}/evidence/${encodeURIComponent(pack)}`, { signal });

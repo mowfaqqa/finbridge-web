@@ -80,6 +80,7 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
   const workspace = current.data;
   const routes = [['overview', 'Overview'], ['invoices', 'Invoices'], ['expenses', 'Expenses'], ['accounts', 'Accounts'], ['reconciliation', 'Reconciliation']];
   if (workspace.role !== "VIEWER") routes.push(["imports/new", "Import statement"]);
+  if (workspace.role !== "VIEWER") routes.push(["readiness", "Readiness"]);
   if (workspace.role === 'OWNER') routes.push(['settings/members', 'Members']);
   const nav = (name: string) => (
     <>

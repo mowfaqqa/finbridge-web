@@ -436,6 +436,134 @@ export interface paths {
         patch: operations["AccountsController_update"];
         trace?: never;
     };
+    "/api/v1/workspaces/{wid}/imports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ImportsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/imports/{bid}/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["ImportsController_upload"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/imports/{bid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ImportsController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/imports/{bid}/rows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ImportsController_rows"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/imports/{bid}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ImportsController_validate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/imports/{bid}/resolutions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ImportsController_resolve"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/imports/{bid}/commit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ImportsController_commit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/imports/{bid}/discard": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ImportsController_discard"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1973,6 +2101,511 @@ export interface operations {
                         lastFour: string | null;
                         active: boolean;
                         version: number;
+                    };
+                };
+            };
+        };
+    };
+    ImportsController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    accountId: string;
+                    filename: string;
+                    bytes: number;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        batch: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            accountId: string;
+                            filename: string;
+                            bytes: number;
+                            headers: string[];
+                            uploaded: boolean;
+                            mapping: {
+                                date: number;
+                                description: number;
+                                reference?: number;
+                                sourceId?: number;
+                                /** @enum {string} */
+                                dateFormat: "ISO" | "DMY" | "MDY";
+                                money: {
+                                    /** @enum {string} */
+                                    mode: "signed";
+                                    amount: number;
+                                } | {
+                                    /** @enum {string} */
+                                    mode: "split";
+                                    debit: number;
+                                    credit: number;
+                                };
+                            } | null;
+                            /** Format: date */
+                            coverageStart: string | null;
+                            /** Format: date */
+                            coverageEnd: string | null;
+                            /** @enum {string} */
+                            state: "UPLOADED" | "VALIDATING" | "REVIEW" | "COMMIT_QUEUED" | "COMMITTED" | "FAILED" | "DISCARDED";
+                            version: number;
+                            acceptedCount: number;
+                            rowCount: number;
+                            errorCount: number;
+                            reviewCount: number;
+                            problemCode: string | null;
+                            failedStage: string | null;
+                            /** Format: date-time */
+                            committedAt: string | null;
+                        };
+                        uploadUrl: string;
+                        uploadTicket: string;
+                        /** Format: date-time */
+                        expiresAt: string;
+                    };
+                };
+            };
+        };
+    };
+    ImportsController_upload: {
+        parameters: {
+            query?: never;
+            header: {
+                "X-Upload-Ticket": string;
+            };
+            path: {
+                wid: string;
+                bid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        accountId: string;
+                        filename: string;
+                        bytes: number;
+                        headers: string[];
+                        uploaded: boolean;
+                        mapping: {
+                            date: number;
+                            description: number;
+                            reference?: number;
+                            sourceId?: number;
+                            /** @enum {string} */
+                            dateFormat: "ISO" | "DMY" | "MDY";
+                            money: {
+                                /** @enum {string} */
+                                mode: "signed";
+                                amount: number;
+                            } | {
+                                /** @enum {string} */
+                                mode: "split";
+                                debit: number;
+                                credit: number;
+                            };
+                        } | null;
+                        /** Format: date */
+                        coverageStart: string | null;
+                        /** Format: date */
+                        coverageEnd: string | null;
+                        /** @enum {string} */
+                        state: "UPLOADED" | "VALIDATING" | "REVIEW" | "COMMIT_QUEUED" | "COMMITTED" | "FAILED" | "DISCARDED";
+                        version: number;
+                        acceptedCount: number;
+                        rowCount: number;
+                        errorCount: number;
+                        reviewCount: number;
+                        problemCode: string | null;
+                        failedStage: string | null;
+                        /** Format: date-time */
+                        committedAt: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ImportsController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+                bid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        accountId: string;
+                        filename: string;
+                        bytes: number;
+                        headers: string[];
+                        uploaded: boolean;
+                        mapping: {
+                            date: number;
+                            description: number;
+                            reference?: number;
+                            sourceId?: number;
+                            /** @enum {string} */
+                            dateFormat: "ISO" | "DMY" | "MDY";
+                            money: {
+                                /** @enum {string} */
+                                mode: "signed";
+                                amount: number;
+                            } | {
+                                /** @enum {string} */
+                                mode: "split";
+                                debit: number;
+                                credit: number;
+                            };
+                        } | null;
+                        /** Format: date */
+                        coverageStart: string | null;
+                        /** Format: date */
+                        coverageEnd: string | null;
+                        /** @enum {string} */
+                        state: "UPLOADED" | "VALIDATING" | "REVIEW" | "COMMIT_QUEUED" | "COMMITTED" | "FAILED" | "DISCARDED";
+                        version: number;
+                        acceptedCount: number;
+                        rowCount: number;
+                        errorCount: number;
+                        reviewCount: number;
+                        problemCode: string | null;
+                        failedStage: string | null;
+                        /** Format: date-time */
+                        committedAt: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ImportsController_rows: {
+        parameters: {
+            query?: {
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+                bid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            rowNumber: number;
+                            /** Format: date */
+                            bookingDate: string | null;
+                            description: string | null;
+                            reference: string | null;
+                            sourceId: string | null;
+                            amountKobo: string | null;
+                            /** @enum {string} */
+                            currency: "NGN";
+                            ambiguous: boolean;
+                            previousCount: number;
+                            /** @enum {string} */
+                            disposition: "KEEP" | "DUPLICATE" | "REVIEW";
+                            error: string | null;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ImportsController_validate: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                bid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    mapping: {
+                        date: number;
+                        description: number;
+                        reference?: number;
+                        sourceId?: number;
+                        /** @enum {string} */
+                        dateFormat: "ISO" | "DMY" | "MDY";
+                        money: {
+                            /** @enum {string} */
+                            mode: "signed";
+                            amount: number;
+                        } | {
+                            /** @enum {string} */
+                            mode: "split";
+                            debit: number;
+                            credit: number;
+                        };
+                    };
+                    /** Format: date */
+                    coverageStart: string;
+                    /** Format: date */
+                    coverageEnd: string;
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        statusUrl: string;
+                        /** @enum {string} */
+                        state: "UPLOADED" | "VALIDATING" | "REVIEW" | "COMMIT_QUEUED" | "COMMITTED" | "FAILED" | "DISCARDED";
+                    };
+                };
+            };
+        };
+    };
+    ImportsController_resolve: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                bid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                    choices: {
+                        /** Format: uuid */
+                        rowId: string;
+                        /** @enum {string} */
+                        decision: "KEEP" | "DUPLICATE";
+                    }[];
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        accountId: string;
+                        filename: string;
+                        bytes: number;
+                        headers: string[];
+                        uploaded: boolean;
+                        mapping: {
+                            date: number;
+                            description: number;
+                            reference?: number;
+                            sourceId?: number;
+                            /** @enum {string} */
+                            dateFormat: "ISO" | "DMY" | "MDY";
+                            money: {
+                                /** @enum {string} */
+                                mode: "signed";
+                                amount: number;
+                            } | {
+                                /** @enum {string} */
+                                mode: "split";
+                                debit: number;
+                                credit: number;
+                            };
+                        } | null;
+                        /** Format: date */
+                        coverageStart: string | null;
+                        /** Format: date */
+                        coverageEnd: string | null;
+                        /** @enum {string} */
+                        state: "UPLOADED" | "VALIDATING" | "REVIEW" | "COMMIT_QUEUED" | "COMMITTED" | "FAILED" | "DISCARDED";
+                        version: number;
+                        acceptedCount: number;
+                        rowCount: number;
+                        errorCount: number;
+                        reviewCount: number;
+                        problemCode: string | null;
+                        failedStage: string | null;
+                        /** Format: date-time */
+                        committedAt: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ImportsController_commit: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                bid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        statusUrl: string;
+                        /** @enum {string} */
+                        state: "UPLOADED" | "VALIDATING" | "REVIEW" | "COMMIT_QUEUED" | "COMMITTED" | "FAILED" | "DISCARDED";
+                    };
+                };
+            };
+        };
+    };
+    ImportsController_discard: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                bid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        accountId: string;
+                        filename: string;
+                        bytes: number;
+                        headers: string[];
+                        uploaded: boolean;
+                        mapping: {
+                            date: number;
+                            description: number;
+                            reference?: number;
+                            sourceId?: number;
+                            /** @enum {string} */
+                            dateFormat: "ISO" | "DMY" | "MDY";
+                            money: {
+                                /** @enum {string} */
+                                mode: "signed";
+                                amount: number;
+                            } | {
+                                /** @enum {string} */
+                                mode: "split";
+                                debit: number;
+                                credit: number;
+                            };
+                        } | null;
+                        /** Format: date */
+                        coverageStart: string | null;
+                        /** Format: date */
+                        coverageEnd: string | null;
+                        /** @enum {string} */
+                        state: "UPLOADED" | "VALIDATING" | "REVIEW" | "COMMIT_QUEUED" | "COMMITTED" | "FAILED" | "DISCARDED";
+                        version: number;
+                        acceptedCount: number;
+                        rowCount: number;
+                        errorCount: number;
+                        reviewCount: number;
+                        problemCode: string | null;
+                        failedStage: string | null;
+                        /** Format: date-time */
+                        committedAt: string | null;
                     };
                 };
             };

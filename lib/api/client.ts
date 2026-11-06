@@ -94,3 +94,24 @@ export const getAccount = (id: string, accountId: string, signal?: AbortSignal) 
   api<Account>(`/workspaces/${id}/accounts/${encodeURIComponent(accountId)}`, { signal });
 export const accountLabel = (account: Pick<Account, 'label' | 'lastFour'>) =>
   account.lastFour ? `${account.label} · •••• ${account.lastFour}` : account.label;
+
+export type ImportBatch = Get<'/api/v1/workspaces/{wid}/imports/{bid}'>;
+export type ImportRow = Get<'/api/v1/workspaces/{wid}/imports/{bid}/rows'>['items'][number];
+export type ImportMapping = Body<'/api/v1/workspaces/{wid}/imports/{bid}/validate'>['mapping'];
+export type ImportTicket = Created<'/api/v1/workspaces/{wid}/imports'>;
+export const getImport = (id: string, batch: string, signal?: AbortSignal) =>
+  api<ImportBatch>(`/workspaces/${id}/imports/${encodeURIComponent(batch)}`, { signal });
+export const listImportRows = (id: string, batch: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/imports/{bid}/rows'>>(`/workspaces/${id}/imports/${batch}/rows?${filters}`, { signal });
+
+export async function uploadStatement(ticket: ImportTicket, file: File) {
+  const response = await fetch(ticket.uploadUrl, {
+    method: 'PUT', credentials: 'same-origin',
+    headers: { 'Content-Type': 'text/csv', 'X-Upload-Ticket': ticket.uploadTicket }, body: file,
+  });
+  if (!response.ok) {
+    const problem = await response.json().catch(() => ({}));
+    throw new ApiError(response.status, problem.code ?? 'UPLOAD_FAILED', problem.title ?? 'The file could not be uploaded.', problem.fieldErrors, problem.requestId);
+  }
+  return response.json() as Promise<ImportBatch>;
+}

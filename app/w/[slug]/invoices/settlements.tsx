@@ -87,8 +87,8 @@ export function SettlementHistory({ invoice }: { invoice: Invoice }) {
           {row.reversalReason && <p className="break-words text-label">Reversal reason {row.reversalReason}</p>}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge tone={row.reversedAt ? 'warning' : 'neutral'}>{row.reversedAt ? 'Reversed' : 'Recorded'}</Badge>
-          {canWrite && !row.reversedAt && row.source === 'MANUAL' &&
+          <Badge tone={row.reversedAt ? 'warning' : row.verified ? 'success' : 'neutral'}>{row.reversedAt ? 'Reversed' : row.verified ? 'Verified' : 'Unverified'}</Badge>
+          {canWrite && !row.reversedAt && !row.verified && row.source === 'MANUAL' &&
             <Button secondary onClick={() => open({ kind: 'reverse', settlement: row })}
               aria-label={`Reverse receipt of ${formatMoney(row.amountKobo)} on ${formatDate(row.receiptDate)}`}>Reverse</Button>}
         </div>

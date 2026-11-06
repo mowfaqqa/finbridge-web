@@ -85,3 +85,49 @@ export type Settlement = Get<'/api/v1/workspaces/{wid}/invoices/{iid}/settlement
 export type SettlementInput = Body<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>;
 export const listSettlements = (id: string, invoiceId: string, filters: URLSearchParams, signal?: AbortSignal) =>
   api<Get<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>>(`/workspaces/${id}/invoices/${invoiceId}/settlements?${filters}`, { signal });
+
+export type Account = Get<'/api/v1/workspaces/{wid}/accounts/{aid}'>;
+export type AccountInput = Body<'/api/v1/workspaces/{wid}/accounts'>;
+export const listAccounts = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/accounts'>>(`/workspaces/${id}/accounts?${filters}`, { signal });
+export const getAccount = (id: string, accountId: string, signal?: AbortSignal) =>
+  api<Account>(`/workspaces/${id}/accounts/${encodeURIComponent(accountId)}`, { signal });
+export const accountLabel = (account: Pick<Account, 'label' | 'lastFour'>) =>
+  account.lastFour ? `${account.label} · •••• ${account.lastFour}` : account.label;
+
+export type ImportBatch = Get<'/api/v1/workspaces/{wid}/imports/{bid}'>;
+export type ImportRow = Get<'/api/v1/workspaces/{wid}/imports/{bid}/rows'>['items'][number];
+export type ImportMapping = Body<'/api/v1/workspaces/{wid}/imports/{bid}/validate'>['mapping'];
+export type ImportTicket = Created<'/api/v1/workspaces/{wid}/imports'>;
+export const getImport = (id: string, batch: string, signal?: AbortSignal) =>
+  api<ImportBatch>(`/workspaces/${id}/imports/${encodeURIComponent(batch)}`, { signal });
+export const listImportRows = (id: string, batch: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/imports/{bid}/rows'>>(`/workspaces/${id}/imports/${batch}/rows?${filters}`, { signal });
+
+export async function uploadStatement(ticket: ImportTicket, file: File) {
+  const response = await fetch(ticket.uploadUrl, {
+    method: 'PUT', credentials: 'same-origin',
+    headers: { 'Content-Type': 'text/csv', 'X-Upload-Ticket': ticket.uploadTicket }, body: file,
+  });
+  if (!response.ok) {
+    const problem = await response.json().catch(() => ({}));
+    throw new ApiError(response.status, problem.code ?? 'UPLOAD_FAILED', problem.title ?? 'The file could not be uploaded.', problem.fieldErrors, problem.requestId);
+  }
+  return response.json() as Promise<ImportBatch>;
+}
+
+export type StatementLine = Get<'/api/v1/workspaces/{wid}/statement-entries'>['items'][number];
+export type StatementDetail = Get<'/api/v1/workspaces/{wid}/statement-entries/{sid}'>;
+export type Candidate = Get<'/api/v1/workspaces/{wid}/statement-entries/{sid}/candidates'>[number];
+export const listStatements = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/statement-entries'>>(`/workspaces/${id}/statement-entries?${filters}`, { signal });
+export const getStatement = (id: string, entry: string, signal?: AbortSignal) =>
+  api<StatementDetail>(`/workspaces/${id}/statement-entries/${encodeURIComponent(entry)}`, { signal });
+export const getCandidates = (id: string, entry: string, q: string, signal?: AbortSignal) =>
+  api<Candidate[]>(`/workspaces/${id}/statement-entries/${entry}/candidates?${new URLSearchParams(q ? { q } : {})}`, { signal });
+
+export type InternalTransfer = StatementDetail['transfers'][number];
+export const listTransferCandidates = (id: string, entry: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/statement-entries/{sid}/transfer-candidates'>>(
+    `/workspaces/${id}/statement-entries/${entry}/transfer-candidates?${filters}`, { signal },
+  );

@@ -157,7 +157,10 @@ function ImportStatus({ batch }: { batch: ImportBatch }) {
             : `The import could not finish. Review the file and retry. Reference ${batch.problemCode}`}
       </p>}
       {batch.coverageStart && batch.coverageEnd && <p>Confirmed coverage {formatDate(batch.coverageStart)} to {formatDate(batch.coverageEnd)}</p>}
-      {batch.state === 'COMMITTED' && <p role="status">{batch.acceptedCount} {batch.acceptedCount === 1 ? 'row' : 'rows'} published. Contact support to correct a committed file.</p>}
+      {batch.state === 'COMMITTED' && <div className="space-y-3">
+        <p role="status">{batch.acceptedCount} {batch.acceptedCount === 1 ? 'row' : 'rows'} published. Contact support to correct a committed file.</p>
+        <Link className={secondaryAction} href={`/w/${workspace.slug}/reconciliation?accountId=${batch.accountId}`}>Open reconciliation</Link>
+      </div>}
       {batch.state === 'REVIEW' && <p>{batch.rowCount} rows · {batch.errorCount} errors · {batch.reviewCount} duplicate decisions remaining</p>}
       {batch.state === 'REVIEW' && batch.rowCount === 0 && <p>This statement has no transaction rows. Publishing records the confirmed coverage.</p>}
       {canWrite && batch.state !== 'COMMITTED' && batch.state !== 'DISCARDED' &&

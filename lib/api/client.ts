@@ -125,3 +125,9 @@ export const getStatement = (id: string, entry: string, signal?: AbortSignal) =>
   api<StatementDetail>(`/workspaces/${id}/statement-entries/${encodeURIComponent(entry)}`, { signal });
 export const getCandidates = (id: string, entry: string, q: string, signal?: AbortSignal) =>
   api<Candidate[]>(`/workspaces/${id}/statement-entries/${entry}/candidates?${new URLSearchParams(q ? { q } : {})}`, { signal });
+
+export type InternalTransfer = StatementDetail['transfers'][number];
+export const listTransferCandidates = (id: string, entry: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/statement-entries/{sid}/transfer-candidates'>>(
+    `/workspaces/${id}/statement-entries/${entry}/transfer-candidates?${filters}`, { signal },
+  );

@@ -10,14 +10,15 @@ import { useWorkspace, useWorkspaceKey } from '@/components/workspace-shell';
 import { accountLabel, api, ApiError, getCandidates, getStatement, listAccounts, listStatements, type Candidate, type StatementDetail, type StatementLine } from '@/lib/api/client';
 import { formatDate, formatMoney } from '@/lib/format';
 import { useCommandKey } from '@/lib/use-command-key';
+import { Transfers } from './transfers';
 
-const states: Record<StatementLine['status'], string> = { UNMATCHED: 'Unmatched', MATCHED: 'Matched' };
+const states: Record<StatementLine['status'], string> = { UNMATCHED: 'Unmatched', MATCHED: 'Matched', TRANSFER: 'Transfer' };
 const kinds = { INVOICE: 'Open invoices', SETTLEMENT: 'Recorded receipts', EXPENSE: 'Recorded expenses' } as const;
 const kindLabels = { INVOICE: 'Invoice', SETTLEMENT: 'Receipt', EXPENSE: 'Expense' } as const;
 const reasons = { REFERENCE: 'Exact reference and amount', AMOUNT_DATE: 'Exact amount and date window', SEARCH: 'Eligible search result' };
 
 function Status({ state }: { state: StatementLine['status'] }) {
-  return <Badge tone={state === 'MATCHED' ? 'success' : 'neutral'}>{states[state]}</Badge>;
+  return <Badge tone={state === 'MATCHED' ? 'success' : state === 'TRANSFER' ? 'info' : 'neutral'}>{states[state]}</Badge>;
 }
 
 export function Reconciliation() {
@@ -217,6 +218,7 @@ function Detail({ entry }: { entry: StatementDetail }) {
         </div>;
       })}
     </div>}
+    <Transfers entry={entry} />
     {entry.history.length > 0 && <div className="space-y-3 border-t border-divider pt-4">
       <h3 className="font-semibold">Match history</h3>
       <ul className="divide-y divide-divider">{entry.history.map((match) => <li className="space-y-2 py-2" key={match.id}>

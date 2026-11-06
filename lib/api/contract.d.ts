@@ -644,6 +644,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{wid}/statement-entries/{sid}/transfer-candidates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TransfersController_list"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/transfers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TransfersController_pair"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/transfers/{tid}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TransfersController_reverse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2706,7 +2754,7 @@ export interface operations {
                 end?: string;
                 start?: string;
                 accountId?: string;
-                status?: "UNMATCHED" | "MATCHED";
+                status?: "UNMATCHED" | "MATCHED" | "TRANSFER";
                 after?: string;
                 before?: string;
                 limit?: number;
@@ -2745,7 +2793,7 @@ export interface operations {
                             /** @enum {string} */
                             currency: "NGN";
                             /** @enum {string} */
-                            status: "UNMATCHED" | "MATCHED";
+                            status: "UNMATCHED" | "MATCHED" | "TRANSFER";
                         }[];
                         /** Format: uuid */
                         nextCursor: string | null;
@@ -2792,7 +2840,7 @@ export interface operations {
                         /** @enum {string} */
                         currency: "NGN";
                         /** @enum {string} */
-                        status: "UNMATCHED" | "MATCHED";
+                        status: "UNMATCHED" | "MATCHED" | "TRANSFER";
                         history: {
                             /** Format: uuid */
                             id: string;
@@ -2802,6 +2850,20 @@ export interface operations {
                             expenseId: string | null;
                             /** Format: uuid */
                             settlementId: string | null;
+                            version: number;
+                            /** Format: date-time */
+                            createdAt: string;
+                            /** Format: date-time */
+                            reversedAt: string | null;
+                            reversalReason: string | null;
+                        }[];
+                        transfers: {
+                            /** Format: uuid */
+                            id: string;
+                            /** Format: uuid */
+                            debitEntryId: string;
+                            /** Format: uuid */
+                            creditEntryId: string;
                             version: number;
                             /** Format: date-time */
                             createdAt: string;
@@ -2940,6 +3002,148 @@ export interface operations {
                         expenseId: string | null;
                         /** Format: uuid */
                         settlementId: string | null;
+                        version: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        reversedAt: string | null;
+                        reversalReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    TransfersController_list: {
+        parameters: {
+            query?: {
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+                sid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: uuid */
+                            id: string;
+                            account: {
+                                /** Format: uuid */
+                                id: string;
+                                label: string;
+                                lastFour: string | null;
+                            };
+                            /** Format: uuid */
+                            batchId: string;
+                            /** Format: date */
+                            date: string;
+                            description: string;
+                            reference: string | null;
+                            amountKobo: string;
+                            /** @enum {string} */
+                            currency: "NGN";
+                            /** @enum {string} */
+                            status: "UNMATCHED" | "MATCHED" | "TRANSFER";
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    TransfersController_pair: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: uuid */
+                    debitEntryId: string;
+                    /** Format: uuid */
+                    creditEntryId: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        debitEntryId: string;
+                        /** Format: uuid */
+                        creditEntryId: string;
+                        version: number;
+                        /** Format: date-time */
+                        createdAt: string;
+                        /** Format: date-time */
+                        reversedAt: string | null;
+                        reversalReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    TransfersController_reverse: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                tid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uuid */
+                        id: string;
+                        /** Format: uuid */
+                        debitEntryId: string;
+                        /** Format: uuid */
+                        creditEntryId: string;
                         version: number;
                         /** Format: date-time */
                         createdAt: string;

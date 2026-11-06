@@ -131,3 +131,10 @@ export const listTransferCandidates = (id: string, entry: string, filters: URLSe
   api<Get<'/api/v1/workspaces/{wid}/statement-entries/{sid}/transfer-candidates'>>(
     `/workspaces/${id}/statement-entries/${entry}/transfer-candidates?${filters}`, { signal },
   );
+
+export type CashFlow = Get<'/api/v1/workspaces/{wid}/reports/cash-flow'>;
+export type Receivables = Get<'/api/v1/workspaces/{wid}/reports/receivables'>;
+export const getCashFlow = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<CashFlow>(`/workspaces/${id}/reports/cash-flow?${filters}`, { signal });
+export const getReceivables = (id: string, signal?: AbortSignal) =>
+  api<Receivables>(`/workspaces/${id}/reports/receivables`, { signal });

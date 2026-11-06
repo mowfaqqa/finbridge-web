@@ -692,6 +692,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{wid}/reports/cash-flow": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ReportsController_cashFlow"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/reports/receivables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ReportsController_receivables"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2753,6 +2785,7 @@ export interface operations {
                 sort?: "asc" | "desc";
                 end?: string;
                 start?: string;
+                accounts?: string;
                 accountId?: string;
                 status?: "UNMATCHED" | "MATCHED" | "TRANSFER";
                 after?: string;
@@ -3150,6 +3183,118 @@ export interface operations {
                         /** Format: date-time */
                         reversedAt: string | null;
                         reversalReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ReportsController_cashFlow: {
+        parameters: {
+            query?: {
+                /** @description Comma-separated statement account IDs */
+                accounts?: string;
+                end?: string;
+                start?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        currency: "NGN";
+                        period: {
+                            /** Format: date */
+                            start: string;
+                            /** Format: date */
+                            end: string;
+                        };
+                        /** Format: date-time */
+                        asOf: string;
+                        /** @enum {string} */
+                        status: "NO_DATA" | "PARTIAL" | "COMPLETE";
+                        /** Format: date-time */
+                        lastImportAt: string | null;
+                        accounts: {
+                            /** Format: uuid */
+                            id: string;
+                            label: string;
+                            lastFour: string | null;
+                            coveredDays: number;
+                            totalDays: number;
+                            coveredRanges: {
+                                /** Format: date */
+                                start: string;
+                                /** Format: date */
+                                end: string;
+                            }[];
+                            gaps: {
+                                /** Format: date */
+                                start: string;
+                                /** Format: date */
+                                end: string;
+                            }[];
+                            /** Format: date-time */
+                            lastImportAt: string | null;
+                        }[];
+                        totals: {
+                            inflowKobo: string;
+                            outflowKobo: string;
+                            netKobo: string;
+                        };
+                        monthly: {
+                            inflowKobo: string;
+                            outflowKobo: string;
+                            netKobo: string;
+                            month: string;
+                        }[];
+                        unmatchedCount: number;
+                        nonTransferCount: number;
+                        matchedCount: number;
+                    };
+                };
+            };
+        };
+    };
+    ReportsController_receivables: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        currency: "NGN";
+                        /** Format: date-time */
+                        asOf: string;
+                        /** Format: date */
+                        asOfDate: string;
+                        totalOpenKobo: string;
+                        currentKobo: string;
+                        overdueKobo: string;
+                        aging: {
+                            label: string;
+                            amountKobo: string;
+                        }[];
                     };
                 };
             };

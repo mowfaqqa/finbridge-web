@@ -73,3 +73,10 @@ export const listInvoices = (id: string, filters: URLSearchParams, signal?: Abor
   api<Get<'/api/v1/workspaces/{wid}/invoices'>>(`/workspaces/${id}/invoices?${filters}`, { signal });
 export const getInvoice = (id: string, invoiceId: string, signal?: AbortSignal) =>
   api<Invoice>(`/workspaces/${id}/invoices/${encodeURIComponent(invoiceId)}`, { signal });
+
+export type Expense = Get<'/api/v1/workspaces/{wid}/expenses/{eid}'>;
+export type ExpenseInput = Body<'/api/v1/workspaces/{wid}/expenses'>;
+export const listExpenses = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/expenses'>>(`/workspaces/${id}/expenses?${filters}`, { signal });
+export const getExpense = (id: string, expenseId: string, signal?: AbortSignal) =>
+  api<Expense>(`/workspaces/${id}/expenses/${encodeURIComponent(expenseId)}`, { signal });

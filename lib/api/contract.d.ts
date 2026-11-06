@@ -324,6 +324,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/workspaces/{wid}/expenses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ExpensesController_list"];
+        put?: never;
+        post: operations["ExpensesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/expenses/{eid}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ExpensesController_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["ExpensesController_update"];
+        trace?: never;
+    };
+    "/api/v1/workspaces/{wid}/expenses/{eid}/void": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ExpensesController_void"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1320,6 +1368,246 @@ export interface operations {
                             position: number;
                             totalKobo: string;
                         }[];
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_list: {
+        parameters: {
+            query?: {
+                sort?: "asc" | "desc";
+                status?: "ACTIVE" | "VOID";
+                category?: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                after?: string;
+                before?: string;
+                limit?: number;
+                q?: string;
+            };
+            header?: never;
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        items: {
+                            /** Format: date */
+                            date: string;
+                            payee: string;
+                            /** @enum {string} */
+                            category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                            amountKobo: string;
+                            reference: string | null;
+                            /** Format: uuid */
+                            id: string;
+                            version: number;
+                            /** @enum {string} */
+                            status: "ACTIVE" | "VOID";
+                            /** @enum {string} */
+                            currency: "NGN";
+                            voidReason: string | null;
+                        }[];
+                        /** Format: uuid */
+                        nextCursor: string | null;
+                        /** Format: uuid */
+                        previousCursor: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_create: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    date: string;
+                    payee: string;
+                    /** @enum {string} */
+                    category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                    amountKobo: string;
+                    reference?: string | null;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        date: string;
+                        payee: string;
+                        /** @enum {string} */
+                        category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                        amountKobo: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        version: number;
+                        /** @enum {string} */
+                        status: "ACTIVE" | "VOID";
+                        /** @enum {string} */
+                        currency: "NGN";
+                        voidReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        date: string;
+                        payee: string;
+                        /** @enum {string} */
+                        category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                        amountKobo: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        version: number;
+                        /** @enum {string} */
+                        status: "ACTIVE" | "VOID";
+                        /** @enum {string} */
+                        currency: "NGN";
+                        voidReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_update: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: date */
+                    date?: string;
+                    payee?: string;
+                    /** @enum {string} */
+                    category?: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                    amountKobo?: string;
+                    reference?: string | null;
+                    version: number;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        date: string;
+                        payee: string;
+                        /** @enum {string} */
+                        category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                        amountKobo: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        version: number;
+                        /** @enum {string} */
+                        status: "ACTIVE" | "VOID";
+                        /** @enum {string} */
+                        currency: "NGN";
+                        voidReason: string | null;
+                    };
+                };
+            };
+        };
+    };
+    ExpensesController_void: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+            };
+            path: {
+                wid: string;
+                eid: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    version: number;
+                    reason: string;
+                };
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: date */
+                        date: string;
+                        payee: string;
+                        /** @enum {string} */
+                        category: "SUPPLIES" | "RENT_AND_UTILITIES" | "TRANSPORT" | "PAYROLL" | "FEES" | "OTHER";
+                        amountKobo: string;
+                        reference: string | null;
+                        /** Format: uuid */
+                        id: string;
+                        version: number;
+                        /** @enum {string} */
+                        status: "ACTIVE" | "VOID";
+                        /** @enum {string} */
+                        currency: "NGN";
+                        voidReason: string | null;
                     };
                 };
             };

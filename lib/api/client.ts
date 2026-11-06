@@ -85,3 +85,12 @@ export type Settlement = Get<'/api/v1/workspaces/{wid}/invoices/{iid}/settlement
 export type SettlementInput = Body<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>;
 export const listSettlements = (id: string, invoiceId: string, filters: URLSearchParams, signal?: AbortSignal) =>
   api<Get<'/api/v1/workspaces/{wid}/invoices/{iid}/settlements'>>(`/workspaces/${id}/invoices/${invoiceId}/settlements?${filters}`, { signal });
+
+export type Account = Get<'/api/v1/workspaces/{wid}/accounts/{aid}'>;
+export type AccountInput = Body<'/api/v1/workspaces/{wid}/accounts'>;
+export const listAccounts = (id: string, filters: URLSearchParams, signal?: AbortSignal) =>
+  api<Get<'/api/v1/workspaces/{wid}/accounts'>>(`/workspaces/${id}/accounts?${filters}`, { signal });
+export const getAccount = (id: string, accountId: string, signal?: AbortSignal) =>
+  api<Account>(`/workspaces/${id}/accounts/${encodeURIComponent(accountId)}`, { signal });
+export const accountLabel = (account: Pick<Account, 'label' | 'lastFour'>) =>
+  account.lastFour ? `${account.label} · •••• ${account.lastFour}` : account.label;

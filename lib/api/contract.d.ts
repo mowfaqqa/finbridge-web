@@ -295,6 +295,7 @@ export interface operations {
                     "application/json": {
                         localSignIn: boolean;
                         invitationsEnabled: boolean;
+                        managedSignIn: boolean;
                     };
                 };
             };

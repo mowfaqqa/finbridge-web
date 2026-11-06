@@ -16,7 +16,10 @@ function subscribe(listener: () => void) {
 }
 
 const serverToken = () => undefined;
-const browserToken = () => new URLSearchParams(window.location.hash.slice(1)).get('token') ?? '';
+function browserToken() {
+  const fragment = window.location.hash || window.sessionStorage.getItem('finbridge-invitation') || '';
+  return new URLSearchParams(fragment.slice(1)).get('token') ?? '';
+}
 
 export default function AcceptInvitation() {
   const token = useSyncExternalStore(subscribe, browserToken, serverToken);
@@ -27,6 +30,7 @@ export default function AcceptInvitation() {
   const accept = useMutation({
     mutationFn: (value: string) => acceptInvitation(value, command.for(value)),
     onSuccess: async (workspace) => {
+      window.sessionStorage.removeItem('finbridge-invitation');
       await client.invalidateQueries({ queryKey: workspacesQuery.queryKey });
       router.replace(`/w/${workspace.slug}/overview`);
     },

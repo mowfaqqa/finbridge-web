@@ -4,37 +4,23 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useRef, type FormEvent } from 'react';
-import { Button, ErrorNotice, Field, fieldStyle, panelStyle, Pending, secondaryAction } from '@/components/ui';
-import { ApiError, authOptions, createWorkspace, localSignIn, signOut, type CreateWorkspace, type Persona } from '@/lib/api/client';
-import { sessionQuery, workspacesQuery } from '@/lib/queries';
+import { Button, ErrorNotice, Field, panelStyle, Pending, secondaryAction } from '@/components/ui';
+import { ApiError, createWorkspace, signOut, type CreateWorkspace } from '@/lib/api/client';
+import { changeIdentity, sessionQuery, workspacesQuery } from '@/lib/queries';
 
-const personas: Array<[Persona, string]> = [
-  ['owner', 'SME owner'],
-  ['operator', 'Finance operator'],
-  ['viewer', 'Read-only advisor'],
-  ['second-owner', 'Second SME owner'],
-];
+import { SignIn } from '@/components/sign-in';
 
 export default function Onboarding() {
   const client = useQueryClient();
   const router = useRouter();
   const command = useRef<{ request: string; key: string } | null>(null);
   const session = useQuery(sessionQuery);
-  const options = useQuery({ queryKey: ['auth-options'], queryFn: ({ signal }) => authOptions(signal), enabled: session.data === null });
   const workspaces = useQuery({ ...workspacesQuery, enabled: !!session.data });
-  const login = useMutation({
-    mutationFn: localSignIn,
-    onSuccess: (actor) => {
-      client.clear();
-      client.setQueryData(sessionQuery.queryKey, actor);
-    },
-  });
   const logout = useMutation({
     mutationFn: signOut,
-    onSuccess: () => {
+    onSuccess: async () => {
       command.current = null;
-      client.clear();
-      client.setQueryData(sessionQuery.queryKey, null);
+      await changeIdentity(client, null);
     },
   });
   const create = useMutation({
@@ -66,30 +52,7 @@ export default function Onboarding() {
       </header>
       {session.isPending && <Pending>Checking your session…</Pending>}
       <ErrorNotice error={session.error} retry={() => void session.refetch()} />
-      {session.data === null && (
-        <section className={panelStyle}>
-          {options.isPending && <Pending>Loading sign-in options…</Pending>}
-          <ErrorNotice error={options.error} retry={() => void options.refetch()} />
-          {options.data?.localSignIn && (
-            <form className="space-y-4" onSubmit={(event) => {
-              event.preventDefault();
-              const form = new FormData(event.currentTarget);
-              login.mutate(form.get('persona') as Persona);
-            }}>
-              <p className="text-muted">Choose a synthetic identity for local development.</p>
-              <ErrorNotice error={login.error} />
-              <div className="space-y-1">
-                <label className="block text-label font-medium" htmlFor="persona">Local identity</label>
-                <select className={fieldStyle} id="persona" name="persona">
-                  {personas.map(([value, label]) => <option value={value} key={value}>{label}</option>)}
-                </select>
-              </div>
-              <Button type="submit" disabled={login.isPending}>{login.isPending ? 'Signing in…' : 'Sign in'}</Button>
-            </form>
-          )}
-          {options.data && !options.data.localSignIn && <p>Sign-in is unavailable in this environment.</p>}
-        </section>
-      )}
+      {session.data === null && <section className={panelStyle}><SignIn /></section>}
       {session.data && (
         <>
           {workspaces.isPending && <Pending>Loading your workspaces…</Pending>}

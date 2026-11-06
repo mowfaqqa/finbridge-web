@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react';
 import { Button, ErrorNotice, fieldStyle, Pending, secondaryAction } from './ui';
 import { getWorkspace, signOut, type Workspace } from '@/lib/api/client';
-import { sessionQuery, workspacesQuery } from '@/lib/queries';
+import { changeIdentity, sessionQuery, workspacesQuery } from '@/lib/queries';
 
 const CurrentWorkspace = createContext<Workspace | null>(null);
 export const roleLabels = { OWNER: 'Owner', OPERATOR: 'Finance operator', VIEWER: 'Read-only advisor' };
@@ -39,15 +39,14 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
     if (!actorId || !workspaceId) return;
     const queryKey = ['workspace', actorId, workspaceId];
     return () => {
-      void client.cancelQueries({ queryKey }).then(() => client.removeQueries({ queryKey }));
+      queueMicrotask(() => client.removeQueries({ queryKey, type: 'inactive' }));
     };
   }, [actorId, workspaceId, client]);
 
   const logout = useMutation({
     mutationFn: signOut,
     onSuccess: async () => {
-      await client.cancelQueries();
-      client.clear();
+      await changeIdentity(client, null);
       router.replace('/onboarding');
     },
   });
@@ -73,6 +72,8 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
   }
 
   const workspace = current.data;
+  const routes = [['overview', 'Overview']];
+  if (workspace.role === 'OWNER') routes.push(['settings/members', 'Members']);
   const nav = (name: string) => (
     <>
       <div>
@@ -87,7 +88,7 @@ export function WorkspaceShell({ slug, children }: { slug: string; children: Rea
         </select>
       </div>
       <nav aria-label="Workspace navigation" className="space-y-1">
-        {[['overview', 'Overview']].map(([route, label]) => {
+        {routes.map(([route, label]) => {
           const href = `/w/${slug}/${route}`;
           const active = pathname === href;
           return (

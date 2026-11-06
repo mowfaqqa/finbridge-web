@@ -48,3 +48,14 @@ export const getWorkspaces = (signal?: AbortSignal) => api<Get<'/api/v1/workspac
 export const createWorkspace = (body: CreateWorkspace, key: string) =>
   api<Created<'/api/v1/workspaces'>>('/workspaces', { method: 'POST', body, key });
 export const getWorkspace = (id: string, signal?: AbortSignal) => api<Workspace>(`/workspaces/${encodeURIComponent(id)}`, { signal });
+
+export type Member = Get<'/api/v1/workspaces/{wid}/members'>[number];
+export type InvitationInput = Body<'/api/v1/workspaces/{wid}/invitations'>;
+export type Invitation = Created<'/api/v1/workspaces/{wid}/invitations'>;
+
+export const listMembers = (id: string, signal?: AbortSignal) =>
+  api<Member[]>(`/workspaces/${id}/members`, { signal });
+export const inviteMember = (id: string, body: InvitationInput, key: string) =>
+  api<Invitation>(`/workspaces/${id}/invitations`, { method: 'POST', body, key });
+export const acceptInvitation = (token: string, key: string) =>
+  api<Workspace>('/invitations/accept', { method: 'POST', body: { token }, key });

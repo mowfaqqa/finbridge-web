@@ -33,11 +33,7 @@ export function CashChart({ data }: { data: CashFlow['monthly'] }) {
     <p className="text-label text-muted">Amounts in NGN. The baseline separates positive and negative net movement.</p>
     <ul className="flex flex-wrap gap-4 text-label" aria-label="Chart legend">
       {series.map((item) => <li key={item.key} className="flex items-center gap-2">
-        <span aria-hidden="true" className="inline-block size-3" style={{
-          background: item.pattern === 'stripe' ? `repeating-linear-gradient(45deg, ${item.color} 0 3px, white 3px 4px)`
-            : item.pattern === 'dot' ? `radial-gradient(white 1px, ${item.color} 1px)` : item.color,
-          backgroundSize: item.pattern === 'dot' ? '4px 4px' : undefined,
-        }} />{item.name}
+        <span aria-hidden="true" className={`inline-block size-3 legend-${item.pattern}`} />{item.name}
       </li>)}
     </ul>
     <svg aria-hidden="true" viewBox={`0 0 ${chartWidth} 244`} className="h-auto w-full">

@@ -50,3 +50,15 @@
     --feedback-duration: 0ms;
   }
 }
+
+.legend-solid {
+  background: var(--chart-in);
+}
+
+.legend-stripe {
+  background: repeating-linear-gradient(45deg, var(--chart-out) 0 3px, var(--surface) 3px 4px);
+}
+
+.legend-dot {
+  background: radial-gradient(var(--surface) 1px, var(--chart-net) 1px) 0 0 / 4px 4px;
+}
